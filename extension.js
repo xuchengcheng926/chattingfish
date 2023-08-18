@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 const request = require('request');
+const iconv = require('iconv-lite');
 
 let config = { 
 	serverAddr: '',
@@ -42,6 +43,8 @@ function timerRequest() {
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 
+// vsce package
+
 /**
  * @param {vscode.ExtensionContext} context
  */
@@ -55,19 +58,19 @@ function activate(context) {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 		vscode.window.showInputBox().then(value => {
+			let buf = iconv.encode(value, 'gbk');
+			let text = buf.toString('utf8')
+			let url = `http://${config.serverAddr}/send?username=${config.username}&password=${config.password}&text=${text}`
+
 			console.log('input: ', value);
 			var options = {
 				'method': 'GET',
-				'url': `http://${config.serverAddr}/send?username=${config.username}&password=${config.password}&text=${config.password}`,
+				'url': encodeURI(url),
 				'proxy': config.proxy,
 			};
 			request(options);
 		});
 	})
-
-    var date = new Date();
-    date.getHours() + ':' date.getMinutes() + 
-    
 
 	context.subscriptions.push(send);
 
