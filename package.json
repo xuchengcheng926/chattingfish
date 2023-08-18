@@ -1,0 +1,112 @@
+{
+  "name": "chattingfish",
+  "displayName": "chattingfish",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.81.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "chattingfish.send",
+        "category": "chattingfish",
+        "title": "send"
+      },
+      {
+        "command": "chattingfish.start",
+        "category": "chattingfish",
+        "title": "start"
+      },
+      {
+        "command": "chattingfish.stop",
+        "category": "chattingfish",
+        "title": "stop"
+      }
+    ],
+    "configuration": {
+      "title": "chattingfish",
+      "properties": {
+        "chattingfish.proxy": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Specifies the proxy path to use."
+        },
+        "chattingfish.username": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Specifies the username to use."
+        },
+        "chattingfish.password": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Specifies the password to use."
+        },
+        "chattingfish.serverAddr": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Specifies the serverAddr to use."
+        },
+        "chattingfish.checktime": {
+          "type": [
+            "number"
+          ],
+          "default": 2000,
+          "description": "Specifies the checktime to use."
+        }
+        
+      }
+    },
+    "keybindings": [
+      {
+        "command": "chattingfish.start",
+        "key": "ctrl+c ctrl+k",
+        "mac": "ctrl+c ctrl+k",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "chattingfish.stop",
+        "key": "ctrl+c ctrl+l",
+        "mac": "ctrl+c ctrl+l",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "20.2.5",
+    "@types/vscode": "^1.81.0",
+    "@vscode/test-electron": "^2.3.2",
+    "eslint": "^8.41.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.1.3"
+  },
+  "dependencies": {
+    "request": "^2.88.2",
+    "vsce": "^2.15.0"
+  }
+}
