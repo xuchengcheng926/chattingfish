@@ -2,7 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 const request = require('request');
-const iconv = require('iconv-lite');
 
 let config = { 
 	serverAddr: '',
@@ -58,17 +57,27 @@ function activate(context) {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 		vscode.window.showInputBox().then(value => {
-			let buf = iconv.encode(value, 'gbk');
-			let text = buf.toString('utf8')
-			let url = `http://${config.serverAddr}/send?username=${config.username}&password=${config.password}&text=${text}`
+			value = value || ''
+			if(value == '')
+			{
+				return
+			}
 
-			console.log('input: ', value);
-			var options = {
-				'method': 'GET',
-				'url': encodeURI(url),
-				'proxy': config.proxy,
-			};
-			request(options);
+			try {
+				let url = `http://${config.serverAddr}/send?username=${config.username}&password=${config.password}&text=${value}`
+
+				console.log('input: ', String(value));
+				var options = {
+					'method': 'GET',
+					'url': encodeURI(url),
+					'proxy': config.proxy,
+				};
+
+				request(options);				
+			} catch (error) {
+				console.log(error);
+			}
+
 		});
 	})
 
@@ -84,8 +93,10 @@ function activate(context) {
 		config.password = vscode.workspace.getConfiguration("chattingfish").get("password") || '';
 		config.proxy = vscode.workspace.getConfiguration("chattingfish").get("proxy") || '';
 		config.checktime = vscode.workspace.getConfiguration("chattingfish").get("checktime") || 2000;
-		if(config.checktime < 1000)
-			config.checktime = 1000
+		if(config.checktime < 200)
+			config.checktime = 200
+		
+		console.log(config);
 		// if(config.proxy != null)
 		// {
 		// 	console.log('use proxy' + config.proxy);

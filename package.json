@@ -68,7 +68,7 @@
           "type": [
             "number"
           ],
-          "default": 2000,
+          "default": 500,
           "description": "Specifies the checktime to use."
         }
       }
@@ -76,20 +76,20 @@
     "keybindings": [
       {
         "command": "chattingfish.start",
-        "key": "ctrl+c ctrl+k",
-        "mac": "ctrl+c ctrl+k",
+        "key": "alt+[",
+        "mac": "alt+[",
         "when": "editorTextFocus"
       },
       {
         "command": "chattingfish.stop",
-        "key": "ctrl+c ctrl+l",
-        "mac": "ctrl+c ctrl+l",
+        "key": "alt+]",
+        "mac": "alt+]",
         "when": "editorTextFocus"
       },
       {
         "command": "chattingfish.send",
-        "key": "ctrl+c ctrl+;",
-        "mac": "ctrl+c ctrl+;",
+        "key": "alt+;",
+        "mac": "alt+;",
         "when": "editorTextFocus"
       }
     ]
