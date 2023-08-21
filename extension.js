@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 const request = require('request');
+const CryptoJS = require('crypto-js');  //引用AES源码js
 
 let config = { 
 	serverAddr: '',
@@ -10,8 +11,43 @@ let config = {
 	password : '',
 	proxy : '',
 	timer: null,
-	checktime: 2000
+	checktime: 2000,
+	aes: ''
 };
+
+// AES加密
+function Encrypt(word) {
+	if(config.aes.length != 16)
+	{
+		return word;
+	}
+	
+	let key = CryptoJS.enc.Utf8.parse(config.aes);
+	let encryptedData  = CryptoJS.AES.encrypt(word, key, {
+		mode: CryptoJS.mode.ECB,
+		padding: CryptoJS.pad.Pkcs7
+	});
+	let hexData = encryptedData.ciphertext.toString();
+    return hexData;
+}
+
+// AES解密
+function Decrypt(word) {
+	if(config.aes.length != 16)
+	{
+		return word;
+	}
+
+	let key = CryptoJS.enc.Utf8.parse(config.aes);
+	let encryptedHexStr  = CryptoJS.enc.Hex.parse(word);
+	let encryptedBase64Str  = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+	let decryptedData  = CryptoJS.AES.decrypt(encryptedBase64Str, key, {
+		mode: CryptoJS.mode.ECB,
+		padding: CryptoJS.pad.Pkcs7
+	});
+	let text = decryptedData.toString(CryptoJS.enc.Utf8);
+    return text;
+}
 
 function timerRequest() {
 	if(config.run == false)
@@ -30,6 +66,9 @@ function timerRequest() {
 		if (!error && response.statusCode == 200) {
 			if(body != '')
 			{
+				body = String(body)
+				let start = body.indexOf(']') + 1
+				body = body.substring(0, start + 1) + Decrypt(body.substring(start + 1))
 				console.log(body) 
 				vscode.window.showInformationMessage(body);
 			}
@@ -64,7 +103,7 @@ function activate(context) {
 			}
 
 			try {
-				let url = `http://${config.serverAddr}/send?username=${config.username}&password=${config.password}&text=${value}`
+				let url = `http://${config.serverAddr}/send?username=${config.username}&password=${config.password}&text=${Encrypt(value)}`
 
 				console.log('input: ', String(value));
 				var options = {
@@ -92,6 +131,7 @@ function activate(context) {
 		config.username = vscode.workspace.getConfiguration("chattingfish").get("username") || '';
 		config.password = vscode.workspace.getConfiguration("chattingfish").get("password") || '';
 		config.proxy = vscode.workspace.getConfiguration("chattingfish").get("proxy") || '';
+		config.aes = vscode.workspace.getConfiguration("chattingfish").get("aes") || '';
 		config.checktime = vscode.workspace.getConfiguration("chattingfish").get("checktime") || 2000;
 		if(config.checktime < 200)
 			config.checktime = 200

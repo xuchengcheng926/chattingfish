@@ -7,3 +7,4 @@ vsc-extension-quickstart.md
 **/jsconfig.json
 **/*.map
 **/.eslintrc.json
+./VSCodeUserSetup-x64-1.81.1.exe
